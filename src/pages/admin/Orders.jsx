@@ -40,7 +40,7 @@ const AdminOrders = () => {
 
     const handleAutoAssign = async (orderId) => {
         try {
-            await api.post(`/orders/${orderId}/auto-assign-delivery`);
+            await api.post(`/admin/orders/${orderId}/auto-assign-delivery`);
             toast.success('Delivery man assigned successfully');
             fetchOrders();
         } catch (error) {
