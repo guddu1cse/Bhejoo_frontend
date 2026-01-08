@@ -13,9 +13,11 @@ import {
     Utensils,
     Bell,
     Bike,
-    ShoppingCart
+    ShoppingCart,
+    Store
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { CartSummaryBar } from '../user/CartSummaryBar';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -28,12 +30,23 @@ const Navbar = () => {
         { name: 'Orders', href: '/orders' },
     ];
 
-    const adminLinks = [
-        { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-        { name: 'Dishes', href: '/admin/dishes', icon: Utensils },
-        { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
-        { name: 'Notifications', href: '/admin/notifications', icon: Bell },
-    ];
+    const getAdminLinks = () => {
+        const baseLinks = [
+            { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+        ];
+
+        if (!user?.mapped_restaurant) {
+            baseLinks.push({ name: 'Setup Restaurant', href: '/admin/add-restaurant', icon: Store });
+        } else {
+            baseLinks.push(
+                { name: 'Dishes', href: '/admin/dishes', icon: Utensils },
+                { name: 'Orders', href: '/admin/orders', icon: ShoppingBag }
+            );
+        }
+
+        baseLinks.push({ name: 'Notifications', href: '/admin/notifications', icon: Bell });
+        return baseLinks;
+    };
 
     const deliveryLinks = [
         { name: 'Dashboard', href: '/delivery/dashboard', icon: LayoutDashboard },
@@ -41,7 +54,7 @@ const Navbar = () => {
     ];
 
     let links = [];
-    if (user?.role === 'admin') links = adminLinks;
+    if (user?.role === 'admin') links = getAdminLinks();
     else if (user?.role === 'Delivery Man') links = deliveryLinks;
     else links = userLinks;
 
@@ -196,6 +209,7 @@ const Layout = ({ children }) => {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}
             </main>
+            <CartSummaryBar />
         </div>
     );
 };

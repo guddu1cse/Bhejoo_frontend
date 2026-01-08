@@ -1,5 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useEffect } from 'react';
+import nprogress from 'nprogress';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { SocketProvider } from './context/SocketContext';
@@ -20,15 +22,36 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminDishes from './pages/admin/Dishes';
 import AdminOrders from './pages/admin/Orders';
 import AdminNotifications from './pages/admin/Notifications';
+import AddRestaurant from './pages/admin/AddRestaurant';
 
 // Delivery Pages
 import DeliveryDashboard from './pages/delivery/Dashboard';
 import DeliveryOrders from './pages/delivery/Orders';
 import Notifications from './pages/common/Notifications';
 
+// Route Progress Component
+const RouteProgress = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    nprogress.start();
+    const timer = setTimeout(() => {
+      nprogress.done();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      nprogress.done();
+    };
+  }, [location]);
+
+  return null;
+};
+
 function App() {
   return (
     <Router>
+      <RouteProgress />
       <AuthProvider>
         <SocketProvider>
           <CartProvider>
@@ -51,6 +74,7 @@ function App() {
                 <Route path="/admin/dishes" element={<AdminDishes />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
                 <Route path="/admin/notifications" element={<AdminNotifications />} />
+                <Route path="/admin/add-restaurant" element={<AddRestaurant />} />
               </Route>
 
               {/* Shared Routes */}
