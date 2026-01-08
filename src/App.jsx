@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/layout/Layout';
 
@@ -29,45 +30,45 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <CartProvider>
-          <Toaster position="top-right" />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+        <SocketProvider>
+          <CartProvider>
+            <Toaster position="top-right" />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* User Routes */}
-            <Route element={<Layout><ProtectedRoute allowedRoles={['user']} /></Layout>}>
-              <Route path="/" element={<Home />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/orders" element={<Orders />} />
-            </Route>
+              {/* User Routes */}
+              <Route element={<Layout><ProtectedRoute allowedRoles={['user']} /></Layout>}>
+                <Route path="/" element={<Home />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/orders" element={<Orders />} />
+              </Route>
 
-            {/* Admin Routes */}
-            <Route element={<Layout><ProtectedRoute allowedRoles={['admin']} /></Layout>}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/dishes" element={<AdminDishes />} />
-              <Route path="/admin/orders" element={<AdminOrders />} />
-              <Route path="/admin/notifications" element={<AdminNotifications />} />
-            </Route>
+              {/* Admin Routes */}
+              <Route element={<Layout><ProtectedRoute allowedRoles={['admin']} /></Layout>}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/dishes" element={<AdminDishes />} />
+                <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route path="/admin/notifications" element={<AdminNotifications />} />
+              </Route>
 
-            {/* Shared Routes */}
-            <Route element={<Layout><ProtectedRoute allowedRoles={['user', 'admin', 'Delivery Man']} /></Layout>}>
-              <Route path="/notifications" element={<Notifications />} />
-            </Route>
+              {/* Shared Routes */}
+              <Route element={<Layout><ProtectedRoute allowedRoles={['user', 'admin', 'Delivery Man']} /></Layout>}>
+                <Route path="/notifications" element={<Notifications />} />
+              </Route>
 
+              {/* Delivery Routes */}
+              <Route element={<Layout><ProtectedRoute allowedRoles={['Delivery Man']} /></Layout>}>
+                <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
+                <Route path="/delivery/orders" element={<DeliveryOrders />} />
+              </Route>
 
-
-            {/* Delivery Routes */}
-            <Route element={<Layout><ProtectedRoute allowedRoles={['Delivery Man']} /></Layout>}>
-              <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
-              <Route path="/delivery/orders" element={<DeliveryOrders />} />
-            </Route>
-
-            {/* Default redirect for unknown routes */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </CartProvider>
+              {/* Default redirect for unknown routes */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </CartProvider>
+        </SocketProvider>
       </AuthProvider>
     </Router>
   );

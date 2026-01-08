@@ -10,6 +10,14 @@ const Notifications = () => {
 
     useEffect(() => {
         fetchNotifications();
+
+        // Listen for real-time updates
+        const handleNewNotification = (event) => {
+            setNotifications(prev => [event.detail, ...prev]);
+        };
+
+        window.addEventListener('notification_received', handleNewNotification);
+        return () => window.removeEventListener('notification_received', handleNewNotification);
     }, []);
 
     const fetchNotifications = async () => {
