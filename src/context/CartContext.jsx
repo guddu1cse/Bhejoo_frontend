@@ -5,6 +5,8 @@ const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
+    const [mismatchData, setMismatchData] = useState(null);
+    const [isMismatchModalOpen, setIsMismatchModalOpen] = useState(false);
 
     // Load cart from local storage on mount
     useEffect(() => {
@@ -20,17 +22,15 @@ export const CartProvider = ({ children }) => {
     }, [cart]);
 
     const addToCart = (dish) => {
+        // Check for restaurant mismatch
+        if (cart.length > 0 && cart[0].restaurant_id !== dish.restaurant_id) {
+            setMismatchData(dish);
+            setIsMismatchModalOpen(true);
+            return;
+        }
+
         setCart((prevCart) => {
             const existingItem = prevCart.find((item) => item.id === dish.id);
-
-            // Check for restaurant mismatch
-            if (prevCart.length > 0 && prevCart[0].restaurant_id !== dish.restaurant_id) {
-                const confirmClear = window.confirm(
-                    "Your cart contains items from another restaurant. Do you want to clear your cart and add this item?"
-                );
-                if (!confirmClear) return prevCart;
-                return [{ ...dish, quantity: 1 }];
-            }
 
             if (existingItem) {
                 toast.success(`Updated quantity for ${dish.name}`);
@@ -41,6 +41,20 @@ export const CartProvider = ({ children }) => {
             toast.success(`Added ${dish.name} to cart`);
             return [...prevCart, { ...dish, quantity: 1 }];
         });
+    };
+
+    const handleConfirmMismatch = () => {
+        if (mismatchData) {
+            setCart([{ ...mismatchData, quantity: 1 }]);
+            toast.success(`Cart cleared and ${mismatchData.name} added`);
+            setMismatchData(null);
+            setIsMismatchModalOpen(false);
+        }
+    };
+
+    const handleCancelMismatch = () => {
+        setMismatchData(null);
+        setIsMismatchModalOpen(false);
     };
 
     const removeFromCart = (dishId) => {
@@ -78,6 +92,10 @@ export const CartProvider = ({ children }) => {
                 clearCart,
                 totalAmount,
                 totalItems,
+                mismatchData,
+                isMismatchModalOpen,
+                handleConfirmMismatch,
+                handleCancelMismatch,
             }}
         >
             {children}

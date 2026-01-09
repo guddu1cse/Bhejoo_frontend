@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { CartSummaryBar } from '../user/CartSummaryBar';
+import { CartMismatchModal } from '../user/CartMismatchModal';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -210,6 +211,7 @@ const Layout = ({ children }) => {
                 {children}
             </main>
             <CartSummaryBar />
+            <CartMismatchModal />
         </div>
     );
 };
