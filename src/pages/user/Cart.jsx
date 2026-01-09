@@ -7,6 +7,7 @@ import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import { Loader } from '../../components/common/Loader';
 
 const Cart = () => {
     const { cart, removeFromCart, updateQuantity, clearCart, totalAmount } = useCart();
@@ -60,6 +61,7 @@ const Cart = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
+            {loading && <Loader fullPage />}
             <div className="flex items-center mb-6">
                 <Link to="/" className="text-gray-500 hover:text-primary-600 mr-4">
                     <ArrowLeft className="w-6 h-6" />

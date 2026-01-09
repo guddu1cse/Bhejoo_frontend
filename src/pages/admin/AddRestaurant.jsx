@@ -6,6 +6,7 @@ import { Input } from '../../components/common/Input';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { Store, MapPin, Phone, FileText } from 'lucide-react';
+import { Loader } from '../../components/common/Loader';
 
 const AddRestaurant = () => {
     const navigate = useNavigate();
@@ -40,6 +41,7 @@ const AddRestaurant = () => {
 
     return (
         <div className="max-w-2xl mx-auto py-12 px-4">
+            {loading && <Loader fullPage />}
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
                 <div className="bg-primary-600 p-8 text-white">
                     <div className="flex items-center gap-3 mb-2">

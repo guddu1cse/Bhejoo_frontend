@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Button } from '../../components/common/Button';
+import { Loader } from '../../components/common/Loader';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select'; // Assuming I have this or use native
 import { Plus, Edit2, Trash2, X } from 'lucide-react';
@@ -115,55 +116,66 @@ const AdminDishes = () => {
                 </Button>
             </div>
 
-            <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dish</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {dishes.map((dish) => (
-                            <tr key={dish.id}>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center">
-                                        {dish.image_url && (
-                                            <img className="h-10 w-10 rounded-full object-cover mr-3" src={dish.image_url} alt="" />
-                                        )}
-                                        <div>
-                                            <div className="text-sm font-medium text-gray-900">{dish.name}</div>
-                                            <div className="text-sm text-gray-500 truncate max-w-xs">{dish.description}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dish.category}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹{dish.price}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <button
-                                        onClick={() => handleToggleAvailability(dish)}
-                                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${dish.availability === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                            }`}
-                                    >
-                                        {dish.availability === 'available' ? 'Available' : 'Unavailable'}
-                                    </button>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button onClick={() => openEditModal(dish)} className="text-primary-600 hover:text-primary-900 mr-4">
-                                        <Edit2 className="w-5 h-5" />
-                                    </button>
-                                    <button onClick={() => handleDelete(dish.id)} className="text-red-600 hover:text-red-900">
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </td>
+            {loading ? (
+                <div className="flex flex-col items-center justify-center min-h-[400px]">
+                    <Loader size="lg" className="mb-4" />
+                    <p className="text-gray-500 animate-pulse">Loading dishes...</p>
+                </div>
+            ) : dishes.length === 0 ? (
+                <div className="bg-white shadow-sm rounded-lg p-12 text-center border-2 border-dashed border-gray-200">
+                    <p className="text-gray-500 text-lg font-medium">No dishes found. Add your first dish to get started!</p>
+                </div>
+            ) : (
+                <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dish</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {dishes.map((dish) => (
+                                <tr key={dish.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            {dish.image_url && (
+                                                <img className="h-10 w-10 rounded-full object-cover mr-3" src={dish.image_url} alt="" />
+                                            )}
+                                            <div>
+                                                <div className="text-sm font-medium text-gray-900">{dish.name}</div>
+                                                <div className="text-sm text-gray-500 truncate max-w-xs">{dish.description}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dish.category}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹{dish.price}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <button
+                                            onClick={() => handleToggleAvailability(dish)}
+                                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${dish.availability === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                }`}
+                                        >
+                                            {dish.availability === 'available' ? 'Available' : 'Unavailable'}
+                                        </button>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button onClick={() => openEditModal(dish)} className="text-primary-600 hover:text-primary-900 mr-4">
+                                            <Edit2 className="w-5 h-5" />
+                                        </button>
+                                        <button onClick={() => handleDelete(dish.id)} className="text-red-600 hover:text-red-900">
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* Modal */}
             {showModal && (

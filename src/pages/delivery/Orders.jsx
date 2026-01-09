@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Button } from '../../components/common/Button';
+import { Loader } from '../../components/common/Loader';
 import { RefreshCw, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -84,8 +85,15 @@ const DeliveryOrders = () => {
             </div>
 
             <div className="space-y-4">
-                {filteredOrders.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">No {activeTab} orders found.</p>
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader size="lg" className="mb-4" />
+                        <p className="text-gray-500 animate-pulse">Loading deliveries...</p>
+                    </div>
+                ) : filteredOrders.length === 0 ? (
+                    <div className="bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center">
+                        <p className="text-gray-500 text-lg">No {activeTab} orders found.</p>
+                    </div>
                 ) : (
                     filteredOrders.map((order) => (
                         <div key={order.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">

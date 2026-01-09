@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { RefreshCw, MapPin } from 'lucide-react';
 import { Button } from '../../components/common/Button';
+import { Loader } from '../../components/common/Loader';
 
 const UserOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -47,8 +48,15 @@ const UserOrders = () => {
             </div>
 
             <div className="space-y-6">
-                {orders.length === 0 && !loading ? (
-                    <p className="text-gray-500 text-center py-12">No orders found.</p>
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader size="lg" className="mb-4" />
+                        <p className="text-gray-500 animate-pulse">Fetching your orders...</p>
+                    </div>
+                ) : orders.length === 0 ? (
+                    <div className="bg-white p-12 rounded-lg shadow-sm border border-gray-100 text-center">
+                        <p className="text-gray-500 text-lg">No orders found.</p>
+                    </div>
                 ) : (
                     orders.map((order) => (
                         <div key={order.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">

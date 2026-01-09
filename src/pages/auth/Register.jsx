@@ -5,6 +5,7 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { UtensilsCrossed } from 'lucide-react';
+import { Loader } from '../../components/common/Loader';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -40,6 +41,7 @@ const Register = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            {loading && <Loader fullPage />}
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <UtensilsCrossed className="h-12 w-12 text-primary-600" />

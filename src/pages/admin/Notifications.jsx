@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Bell, Check } from 'lucide-react';
 import { Button } from '../../components/common/Button';
+import { Loader } from '../../components/common/Loader';
 
 const AdminNotifications = () => {
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchNotifications();
@@ -12,11 +14,14 @@ const AdminNotifications = () => {
 
     const fetchNotifications = async () => {
         try {
+            setLoading(true);
             const response = await api.get('/admin/notifications');
             const data = response.data.data || response.data;
             setNotifications(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching notifications');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -37,9 +42,14 @@ const AdminNotifications = () => {
             </h1>
 
             <div className="space-y-4">
-                {notifications.length === 0 ? (
-                    <div className="bg-white p-6 rounded-lg shadow-sm text-center text-gray-500">
-                        No notifications
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader size="lg" className="mb-4" />
+                        <p className="text-gray-500 animate-pulse">Loading notifications...</p>
+                    </div>
+                ) : notifications.length === 0 ? (
+                    <div className="bg-white p-12 rounded-lg shadow-sm text-center border-2 border-dashed border-gray-200">
+                        <p className="text-gray-500 text-lg font-medium">No notifications yet.</p>
                     </div>
                 ) : (
                     notifications.map((notif) => (

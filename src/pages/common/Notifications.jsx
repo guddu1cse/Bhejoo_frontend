@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Bell, Check } from 'lucide-react';
 import { Button } from '../../components/common/Button';
+import { Loader } from '../../components/common/Loader';
 import { useAuth } from '../../context/AuthContext';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -22,19 +24,16 @@ const Notifications = () => {
 
     const fetchNotifications = async () => {
         try {
-            // Endpoint depends on role? 
-            // Admin uses /admin/notifications. 
-            // User/Delivery uses /notifications (if exists)?
-            // Check routes. I suspect I need to check API endpoints.
-            // Defaulting to /api/notifications which usually maps to generic get user notifications
+            setLoading(true);
             const endpoint = user.role === 'admin' ? '/admin/notifications' : '/notifications';
             const response = await api.get(endpoint);
             const data = response.data.data || response.data;
             setNotifications(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching notifications', error);
-            // Fallback or empty
             setNotifications([]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -55,9 +54,14 @@ const Notifications = () => {
             </h1>
 
             <div className="space-y-4">
-                {notifications.length === 0 ? (
-                    <div className="bg-white p-6 rounded-lg shadow-sm text-center text-gray-500">
-                        No notifications
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader size="lg" className="mb-4" />
+                        <p className="text-gray-500 animate-pulse">Loading notifications...</p>
+                    </div>
+                ) : notifications.length === 0 ? (
+                    <div className="bg-white p-12 rounded-lg shadow-sm text-center border-2 border-dashed border-gray-200">
+                        <p className="text-gray-500 text-lg font-medium">No notifications yet.</p>
                     </div>
                 ) : (
                     notifications.map((notif) => (
