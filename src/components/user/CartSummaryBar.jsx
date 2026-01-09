@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const CartSummaryBar = () => {
     const { totalItems, totalAmount } = useCart();
+    const { pathname } = useLocation();
+
+    if (pathname === '/cart') return null;
 
     return (
         <AnimatePresence>
